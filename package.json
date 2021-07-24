@@ -3,7 +3,7 @@
   "author": "Yurev Alexander",
   "main": "build/index.js",
   "typings": "build/index",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "scripts": {
     "build": "tsc"
   },
