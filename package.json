@@ -1,5 +1,8 @@
 {
   "name": "api_interaction_services",
+  "author": "Yurev Alexander",
+  "main": "build/index.js",
+  "typings": "build/index",
   "version": "0.1.0",
   "scripts": {
     "build": "tsc"

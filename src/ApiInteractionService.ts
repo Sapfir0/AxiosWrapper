@@ -1,13 +1,13 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { bimap, Either } from 'fp-ts/Either';
 import * as qs from 'querystring';
-import BaseApiInteractionService from './BaseApiInteractionService';
+import { BaseApiInteractionService } from './BaseApiInteractionService';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { NetworkError } from './errors/NetworkError';
 import { IApiInteractionService } from './typings/ApiTypes';
 import { RequestSettings } from './typings/common';
 
-class ApiInteractionService implements IApiInteractionService {
+export class ApiInteractionService implements IApiInteractionService {
     constructor(private fetcher: BaseApiInteractionService, private API_URL: string) {}
 
     public get<T = any>(
@@ -75,5 +75,3 @@ class ApiInteractionService implements IApiInteractionService {
         return newConfig;
     };
 }
-
-export default ApiInteractionService;

@@ -2,7 +2,7 @@ import { AxiosResponse } from 'axios';
 import { Either, left, right } from 'fp-ts/Either';
 import { NetworkError } from './errors/NetworkError';
 
-class BaseApiInteractionService {
+export class BaseApiInteractionService {
     public request = async <T>(promise: Promise<AxiosResponse<T>>): Promise<Either<NetworkError, any>> => {
         try {
             const data = await promise;
@@ -14,5 +14,3 @@ class BaseApiInteractionService {
         }
     };
 }
-
-export default BaseApiInteractionService;

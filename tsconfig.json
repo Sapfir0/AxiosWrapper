@@ -29,6 +29,7 @@
     "strictFunctionTypes": true,
     "strictPropertyInitialization": true,
     "alwaysStrict": true,
+    "declaration": true,
     "noImplicitAny": true,
     "noImplicitThis": true
   },
