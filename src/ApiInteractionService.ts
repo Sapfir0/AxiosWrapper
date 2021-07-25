@@ -3,11 +3,16 @@ import { BaseInteractionService } from 'BaseInteractionService';
 import { BaseInteractionError } from 'errors/BaseInteractionError';
 import { Either } from 'fp-ts/lib/Either';
 import { injectable } from 'inversify';
+import container from 'inversify/inversifyContainer';
+import { SERVICE_IDENTIFIER } from 'inversify/inversifyTypes';
 import { IData, RequestSettings } from 'typings/common';
 
 @injectable()
 export class ApiInteractionService {
-    constructor(private API_URL: string, private baseApiInteractionService: BaseInteractionService) {}
+    private baseApiInteractionService: BaseInteractionService;
+    constructor(private API_URL: string) {
+        this.baseApiInteractionService = container.get(SERVICE_IDENTIFIER.BaseInteractionService)
+    }
 
     public async get<T = any>(
         url: string,
@@ -32,9 +37,10 @@ export class ApiInteractionService {
         url: string,
         data?: IData,
         host: string = this.API_URL,
+        settings?: RequestSettings,
         config?: AxiosRequestConfig,
     ): Promise<Either<BaseInteractionError, T>> {
-        return this.baseApiInteractionService.put<T>(url, data, host, config);
+        return this.baseApiInteractionService.put<T>(url, data, host, settings, config);
     }
 
     public async delete<T = any>(

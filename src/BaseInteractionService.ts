@@ -6,16 +6,14 @@ import * as qs from 'querystring';
 import { ApiHelper } from './ApiHelper';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { NetworkError } from './errors/NetworkError';
-import { IApiInteractionService, IAuthInteractionService } from './typings/ApiTypes';
-import { RequestSettings } from './typings/common';
+import { IBaseInteractionService, IAuthInteractionService } from './typings/ApiTypes';
+import { IData, RequestSettings } from './typings/common';
 
-export class BaseInteractionService implements IApiInteractionService {
+export class BaseInteractionService implements IBaseInteractionService {
     private readonly _fetcher: ApiHelper;
-    private readonly _authInteractionService: IAuthInteractionService;
 
     constructor(private API_URL: string) {
-        this._fetcher = container.get<ApiHelper>(SERVICE_IDENTIFIER.BaseInteractionService);
-        this._authInteractionService = container.get(SERVICE_IDENTIFIER.IdentityServerInteractionService);
+        this._fetcher = container.get<ApiHelper>(SERVICE_IDENTIFIER.ApiHelper);
     }
 
     public get<T = any>(
@@ -42,8 +40,9 @@ export class BaseInteractionService implements IApiInteractionService {
 
     public put<T = any>(
         url: string,
-        data?: any,
+        data?: IData,
         host: string = this.API_URL,
+        settings?: RequestSettings,
         config?: AxiosRequestConfig,
     ): Promise<E.Either<BaseInteractionError, T>> {
         return this.query<T>({ method: 'put', url: url, baseURL: host, data: data, ...config });
@@ -51,7 +50,7 @@ export class BaseInteractionService implements IApiInteractionService {
 
     public delete<T = any>(
         url: string,
-        data?: any,
+        data?: IData,
         host: string = this.API_URL,
         config?: AxiosRequestConfig,
     ): Promise<E.Either<BaseInteractionError, T>> {

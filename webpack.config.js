@@ -14,8 +14,7 @@ module.exports = (env) => {
         output: {
             path: path.resolve(__dirname, 'build'),
             publicPath: '/',
-            filename: 'js/[name].[fullhash].bundle.js',
-            chunkFilename: 'js/[name].[fullhash].bundle.js',
+            filename: 'js/[name].bundle.js',
         },
         resolve: {
             extensions: ['.ts', '.tsx', '.js'],

@@ -1,14 +1,15 @@
 {
   "name": "api_interaction_services",
   "author": "Yurev Alexander",
-  "main": "build/src/index.js",
-  "typings": "build/src/index",
-  "version": "0.1.4",
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index",
+  "version": "0.1.5",
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode production --env NODE_ENV=prod",
-    "start": "webpack --mode development --env NODE_ENV=dev",
-    "test": "npm start && node build/test/main.js"
+    "start2": "webpack --mode development --env NODE_ENV=dev",
+    "start": "tsc",
+    "test": "tsc && node dist/test/main.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
