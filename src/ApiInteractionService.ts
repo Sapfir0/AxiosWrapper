@@ -11,7 +11,7 @@ import { IData, RequestSettings } from 'typings/common';
 export class ApiInteractionService {
     private baseApiInteractionService: BaseInteractionService;
     constructor(private API_URL: string) {
-        this.baseApiInteractionService = container.get(SERVICE_IDENTIFIER.BaseInteractionService)
+        this.baseApiInteractionService = container.get(SERVICE_IDENTIFIER.BaseInteractionService);
     }
 
     public async get<T = any>(
