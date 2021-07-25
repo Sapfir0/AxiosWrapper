@@ -1,18 +1,21 @@
 import { AxiosRequestConfig } from 'axios';
-import { BaseApiInteractionService } from 'BaseApiInteractionService';
+import { BaseInteractionService } from 'BaseInteractionService';
 import { ValidationError } from 'Errors/ValidationError';
-import { Either } from 'fp-ts/Either';
+import { Either, bimap, map } from 'fp-ts/Either';
 import { inject, injectable } from 'inversify';
-import { SERVICE_IDENTIFIER } from 'inversify/inversifyTypes';
-import TokenService from 'TokenService';
-import { IAuthInteractionService } from 'typings/ApiTypes';
-import { TokensData } from 'typings/auth';
+import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
+import TokenService from './TokenService';
+import { IAuthInteractionService } from './typings/ApiTypes';
+import { IdentityServerRoutes, TokensData, TokensDataExtended } from './typings/auth';
 import { BaseInteractionError } from './Errors/BaseInteractionError';
+
 
 @injectable()
 export default class IdentityServerInteractionService implements IAuthInteractionService {
     constructor(
-        @inject(SERVICE_IDENTIFIER.BaseInteractionService) private readonly _fetcher: BaseApiInteractionService,
+        protected AUTH_SERVICE_URL: string,
+        protected routes: IdentityServerRoutes,
+        @inject(SERVICE_IDENTIFIER.BaseInteractionService) private readonly _fetcher: BaseInteractionService,
         @inject(SERVICE_IDENTIFIER.TokenService) private readonly _token: TokenService,
     ) {}
 
@@ -25,29 +28,31 @@ export default class IdentityServerInteractionService implements IAuthInteractio
         };
 
         const authData: Either<BaseInteractionError, TokensData> = await this._fetcher.post<TokensData>(
-            AuthServiceRoutes.CONNECT_TOKEN,
+            this.routes.CONNECT_TOKEN,
             data,
-            AUTH_SERVICE_URL,
+            this.AUTH_SERVICE_URL,
             { stringify: true },
         );
-        const tokens = authData
-            .mapRight((tokens: TokensData) => {
+        
+        return bimap(
+            (e: BaseInteractionError) => new BaseInteractionError(e.message),
+            (tokens: TokensData) => {
                 this._token.setTokens(tokens as TokensDataExtended);
                 return tokens;
-            })
-            .mapLeft((e: BaseInteractionError) => new ValidationError());
-        return tokens;
+            },
+        )(authData);
+
     };
 
     public logout = async (): Promise<Either<BaseInteractionError, null>> => {
-        return this._fetcher.get(AuthServiceRoutes.LOGOUT, {}, AUTH_SERVICE_URL, {
+        return this._fetcher.get(this.routes.LOGOUT, {}, this.AUTH_SERVICE_URL, {
             params: { id_token_hint: this._token.getTokens()?.access_token },
         });
     };
 
     public request = async () => {
         await this.updateTokenIfOld();
-    }
+    };
 
     private setAuthHeader = (config?: AxiosRequestConfig) => {
         const newConfig: AxiosRequestConfig = {
@@ -67,7 +72,7 @@ export default class IdentityServerInteractionService implements IAuthInteractio
             refresh_token: refreshToken,
         };
 
-        return this._baseInteractionService.post(AuthServiceRoutes.CONNECT_TOKEN, data, AUTH_SERVICE_URL, {
+        return this._fetcher.post(this.routes.CONNECT_TOKEN, data, this.AUTH_SERVICE_URL, {
             stringify: true,
         });
     };
@@ -79,9 +84,10 @@ export default class IdentityServerInteractionService implements IAuthInteractio
         if (user && isUpdatable) {
             const newUser = await this.refreshToken(user.refresh_token);
             console.log(newUser);
-            newUser.mapRight((user) => {
+            map((user: any) => {
                 this._token.setTokens(user);
-            });
+            })(newUser)
+
         }
     };
 }

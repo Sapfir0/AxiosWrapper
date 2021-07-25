@@ -1,7 +1,6 @@
-import { inject, injectable } from 'inversify';
-import { SERVICE_IDENTIFIER } from 'inversify/inversifyTypes';
-import {getLocalStorage} from 'LocalStorage';
-import { TokensDataExtended } from 'typings/auth';
+import { injectable } from 'inversify';
+import { getLocalStorage } from './LocalStorage';
+import { TokensDataExtended } from './typings/auth';
 
 @injectable()
 class TokenService {

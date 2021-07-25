@@ -41,6 +41,6 @@ export interface IApiInteractionService {
 
 
 export interface IAuthInteractionService {
-    login: (username: string, password: string) => E.Either<ValidationError, TokensData>
+    login: (username: string, password: string) => Promise<E.Either<ValidationError, TokensData>>
     logout: () => Promise<E.Either<BaseInteractionError, null>>
 }
