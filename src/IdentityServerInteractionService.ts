@@ -13,7 +13,7 @@ import container from './inversify/inversifyContainer';
 
 
 @injectable()
-export default class IdentityServerInteractionService implements IAuthInteractionService {
+export class IdentityServerInteractionService implements IAuthInteractionService {
     private readonly _token: TokenService
     private readonly _fetcher: BaseInteractionService
     constructor(

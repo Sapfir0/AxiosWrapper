@@ -1,11 +1,11 @@
+import { Container } from 'inversify';
 import 'reflect-metadata';
 import { ApiHelper } from '../ApiHelper';
-import IdentityServerInteractionService from '../IdentityServerInteractionService';
-import { Container } from 'inversify';
+import { BaseInteractionService } from '../BaseInteractionService';
+import { IdentityServerInteractionService } from '../IdentityServerInteractionService';
 import TokenService from '../TokenService';
 import { IAuthInteractionService } from '../typings/ApiTypes';
 import { SERVICE_IDENTIFIER } from './inversifyTypes';
-import { BaseInteractionService } from '../BaseInteractionService';
 
 const container = new Container();
 
