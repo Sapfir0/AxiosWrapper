@@ -1,15 +1,22 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as E from 'fp-ts/lib/Either';
+import container from 'inversify/inversifyContainer';
+import { SERVICE_IDENTIFIER } from 'inversify/inversifyTypes';
 import * as qs from 'querystring';
 import { BaseApiInteractionService } from './BaseApiInteractionService';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { NetworkError } from './errors/NetworkError';
-import { IApiInteractionService } from './typings/ApiTypes';
+import { IApiInteractionService, IAuthInteractionService } from './typings/ApiTypes';
 import { RequestSettings } from './typings/common';
-export class ApiInteractionService implements IApiInteractionService {
-    private fetcher: BaseApiInteractionService = new BaseApiInteractionService();
 
-    constructor(private API_URL: string) {}
+export class ApiInteractionService implements IApiInteractionService {
+    private readonly _fetcher: BaseApiInteractionService;
+    private readonly _authInteractionService: IAuthInteractionService;
+
+    constructor(private API_URL: string) {
+        this._fetcher = container.get<BaseApiInteractionService>(SERVICE_IDENTIFIER.BaseInteractionService);
+        this._authInteractionService = container.get(SERVICE_IDENTIFIER.IdentityServerInteractionService);
+    }
 
     public get<T = any>(
         url: string,
@@ -56,8 +63,10 @@ export class ApiInteractionService implements IApiInteractionService {
             ...config,
         };
 
+        
+
         const req = axios.request<T>({ ...newConfig });
-        const response = await this.fetcher.request<T>(req)();
+        const response = await this._fetcher.request<T>(req)();
 
         return E.bimap(
             (e: NetworkError) => new BaseInteractionError(e.message),
