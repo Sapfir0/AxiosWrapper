@@ -1,16 +1,12 @@
 import { AxiosResponse } from 'axios';
-import { Either, left, right } from 'fp-ts/Either';
+import * as TE from 'fp-ts/lib/TaskEither';
 import { NetworkError } from './errors/NetworkError';
 
 export class BaseApiInteractionService {
-    public request = async <T>(promise: Promise<AxiosResponse<T>>): Promise<Either<NetworkError, any>> => {
-        try {
-            const data = await promise;
-            return right<NetworkError, AxiosResponse<T>>(data);
-        } catch (e) {
-            const error = { ...e };
-            console.warn(error);
-            return left<NetworkError, AxiosResponse<T>>(new NetworkError(error.response?.data.error ?? 'Null error'));
-        }
+    public request = <T>(promise: Promise<AxiosResponse<T>>) => {
+        return TE.tryCatch(
+            () => promise,
+            (reason) => new NetworkError(`${reason}`),
+        );
     };
 }

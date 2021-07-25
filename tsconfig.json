@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "module": "esnext",
+    "module": "commonjs",
     "outDir": "build",
     "rootDir": ".",
     "strict": true,
@@ -34,7 +34,8 @@
     "noImplicitThis": true
   },
   "include": [
-    "src"
+    "src",
+    "test"
   ],
   "exclude": [
     "node_modules",
