@@ -1,11 +1,11 @@
 import { AxiosRequestConfig } from 'axios';
-import { BaseInteractionService } from 'BaseInteractionService';
-import { BaseInteractionError } from 'errors/BaseInteractionError';
+import { BaseInteractionService } from './BaseInteractionService';
+import { BaseInteractionError } from './errors/BaseInteractionError';
 import { Either } from 'fp-ts/lib/Either';
 import { injectable } from 'inversify';
-import container from 'inversify/inversifyContainer';
-import { SERVICE_IDENTIFIER } from 'inversify/inversifyTypes';
-import { IData, RequestSettings } from 'typings/common';
+import container from './inversify/inversifyContainer';
+import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
+import { IData, RequestSettings } from './typings/common';
 
 @injectable()
 export class ApiInteractionService {

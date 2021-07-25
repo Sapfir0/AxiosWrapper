@@ -1,12 +1,12 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as E from 'fp-ts/lib/Either';
-import container from './inversify/inversifyContainer';
-import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
 import * as qs from 'querystring';
 import { ApiHelper } from './ApiHelper';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { NetworkError } from './errors/NetworkError';
-import { IBaseInteractionService, IAuthInteractionService } from './typings/ApiTypes';
+import container from './inversify/inversifyContainer';
+import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
+import { IBaseInteractionService } from './typings/ApiTypes';
 import { IData, RequestSettings } from './typings/common';
 
 export class BaseInteractionService implements IBaseInteractionService {

@@ -8,7 +8,7 @@ import TokenService from './TokenService';
 import { IAuthInteractionService } from './typings/ApiTypes';
 import { IdentityServerRoutes, TokensData, TokensDataExtended } from './typings/auth';
 import { BaseInteractionError } from './errors/BaseInteractionError';
-import { IData, RequestSettings } from 'typings/common';
+import { IData, RequestSettings } from './typings/common';
 import container from './inversify/inversifyContainer';
 
 
