@@ -8,12 +8,14 @@
 # testing
 /coverage
 
+
 .vscode
 
 package-lock.json
 yarn.lock
 # production
 /build
+dist
 
 # misc
 .DS_Store

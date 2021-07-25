@@ -1,7 +1,7 @@
 import { isLeft, isRight } from 'fp-ts/lib/These';
-import { ApiInteractionService } from '../src/ApiInteractionService';
+import { BaseInteractionService } from '../src/BaseInteractionService';
 
-const api = new ApiInteractionService('https://axoltlapi.herokuapp.com/');
+const api = new BaseInteractionService('https://axoltlapi.herokuapp.com/');
 
 async function getAxotle() {
     const response = await api.get('/');
