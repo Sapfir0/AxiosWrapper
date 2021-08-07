@@ -1,8 +1,6 @@
-import { injectable } from 'inversify';
 import { getLocalStorage } from './LocalStorage';
 import { TokensDataExtended } from './typings/auth';
 
-@injectable()
 class TokenService {
     private readonly timeoutDivider = 2; // при каком отношении таймстемпа генерации и уже прошедшего времени мы будем обновлять токен
     private _ls = getLocalStorage('USER');

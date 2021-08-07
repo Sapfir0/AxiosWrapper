@@ -1,27 +1,24 @@
 import { AxiosRequestConfig } from 'axios';
+import { bimap, Either, map } from 'fp-ts/Either';
 import { ApiInteractionService } from './ApiInteractionService';
+import { BaseInteractionError } from './errors/BaseInteractionError';
 import { ValidationError } from './errors/ValidationError';
-import { Either, bimap, map } from 'fp-ts/Either';
-import { inject, injectable } from 'inversify';
-import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
 import TokenService from './TokenService';
 import { IIdentityInteractionService } from './typings/ApiTypes';
 import { IdentityServerRoutes, TokensData, TokensDataExtended } from './typings/auth';
-import { BaseInteractionError } from './errors/BaseInteractionError';
 import { IData, RequestSettings } from './typings/common';
-import container from './inversify/inversifyContainer';
 
 
-@injectable()
-export class IdentityServerInteractionService implements IIdentityInteractionService {
+export class IdentityServerInteractionService extends ApiInteractionService implements IIdentityInteractionService {
     private readonly _token: TokenService
-    private readonly _fetcher: ApiInteractionService
+    
     constructor(
+        API_URL: string,
         protected AUTH_SERVICE_URL: string,
         protected routes: IdentityServerRoutes
     ) {
-        this._fetcher = container.get(SERVICE_IDENTIFIER.BaseInteractionService)
-        this._token = container.get(SERVICE_IDENTIFIER.TokenService)
+        super(API_URL)
+        this._token = new TokenService()
     }
 
     public login = async (username: string, password: string): Promise<Either<ValidationError, TokensData>> => {
@@ -32,7 +29,7 @@ export class IdentityServerInteractionService implements IIdentityInteractionSer
             password: password,
         };
 
-        const authData: Either<BaseInteractionError, TokensData> = await this._fetcher.post<TokensData>(
+        const authData: Either<BaseInteractionError, TokensData> = await super.post<TokensData>(
             this.routes.CONNECT_TOKEN,
             data,
             this.AUTH_SERVICE_URL,
@@ -50,7 +47,7 @@ export class IdentityServerInteractionService implements IIdentityInteractionSer
     };
 
     public logout = async (): Promise<Either<BaseInteractionError, null>> => {
-        return this._fetcher.get(this.routes.LOGOUT, {}, this.AUTH_SERVICE_URL, {
+        return super.get(this.routes.LOGOUT, {}, this.AUTH_SERVICE_URL, {
             params: { id_token_hint: this._token.getTokens()?.access_token },
         });
     };
@@ -62,22 +59,22 @@ export class IdentityServerInteractionService implements IIdentityInteractionSer
     
     public async get<T = any>(url: string, data?:IData, host?: string, config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
         await this.updateTokenIfOld()
-        return this._fetcher.get<T>(url, data, host, this.setAuthHeader(config))
+        return this.get<T>(url, data, host, this.setAuthHeader(config))
     }
 
     public async post<T = any>(url: string, data?: IData, host?: string,  settings?: RequestSettings, config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
         await this.updateTokenIfOld()
-        return this._fetcher.post<T>(url, data, host, settings, this.setAuthHeader(config))
+        return this.post<T>(url, data, host, settings, this.setAuthHeader(config))
     }
 
     public async put<T = any>(url: string, data?: IData, host?: string,  settings?: RequestSettings, config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
         await this.updateTokenIfOld()
-        return this._fetcher.put<T>(url, data, host, settings, this.setAuthHeader(config))
+        return this.put<T>(url, data, host, settings, this.setAuthHeader(config))
     }
 
     public async delete<T = any>(url: string, data?: IData, host?: string,  config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
         await this.updateTokenIfOld()
-        return this._fetcher.delete<T>(url, data, host, this.setAuthHeader(config))
+        return this.delete<T>(url, data, host, this.setAuthHeader(config))
     }
 
     private setAuthHeader = (config?: AxiosRequestConfig) => {
@@ -98,7 +95,7 @@ export class IdentityServerInteractionService implements IIdentityInteractionSer
             refresh_token: refreshToken,
         };
 
-        return this._fetcher.post(this.routes.CONNECT_TOKEN, data, this.AUTH_SERVICE_URL, {
+        return this.post(this.routes.CONNECT_TOKEN, data, this.AUTH_SERVICE_URL, {
             stringify: true,
         });
     };

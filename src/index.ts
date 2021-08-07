@@ -2,7 +2,6 @@ export * from "./ApiInteractionService";
 export * from "./typings/ApiTypes"
 export * from "./typings/auth"
 export * from "./typings/common"
-export * from "./ApiInteractionService"
 export * from "./IdentityServerInteractionService"
 export * from "./errors/BaseInteractionError"
 export * from "./errors/NetworkError"

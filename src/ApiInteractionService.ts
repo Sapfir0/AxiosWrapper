@@ -1,21 +1,18 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as E from 'fp-ts/lib/Either';
-import { injectable } from 'inversify';
 import * as qs from 'querystring';
 import { ApiHelper } from './ApiHelper';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { NetworkError } from './errors/NetworkError';
-import container from './inversify/inversifyContainer';
-import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
 import { IBaseInteractionService } from './typings/ApiTypes';
 import { IData, RequestSettings } from './typings/common';
 
-@injectable()
+
 export class ApiInteractionService implements IBaseInteractionService {
     private readonly _fetcher: ApiHelper;
 
     constructor(private API_URL: string) {
-        this._fetcher = container.get<ApiHelper>(SERVICE_IDENTIFIER.ApiHelper);
+        this._fetcher = new ApiHelper()
     }
 
     public get<T = any>(
