@@ -41,7 +41,7 @@ export interface IBaseInteractionService {
 }
 
 
-export interface IAuthInteractionService extends IBaseInteractionService {
+export interface IIdentityInteractionService extends IBaseInteractionService {
     login: (username: string, password: string) => Promise<E.Either<ValidationError, TokensData>>
     logout: () => Promise<E.Either<BaseInteractionError, null>>
 }

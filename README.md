@@ -1,5 +1,5 @@
 
-# Api interaction service
+# Api interaction services
 
 All services use `fp-ts` library, http methods wrapper return `fp-ts` either.
 ## Simple api interaction class
@@ -7,32 +7,39 @@ All services use `fp-ts` library, http methods wrapper return `fp-ts` either.
 
 So you can use it as
 
-    const fetcher = new ApiInteractionService("http://localhost:3300)
-
-
-### Inversify
-
-Or you can use this with inverisify in a few steps:
-
-1. Declare SERVICE_IDENTIFIER name for service
-    
-        export const SERVICE_IDENTIFIER = {
-            ApiInteractionService: Symbol.for('ApiInteractionService'),
-        };
-
-1. Bind this name to class with throwing url to API
-
-        container.bind<ApiInteractionService>(SERVICE_IDENTIFIER.ApiInteractionService).toConstantValue(new ApiInteractionService(API_URL));
-
-1. And now you can inject this service to your class
-
-        constructor(@inject(SERVICE_IDENTIFIER.ApiInteractionService) protected _apiService: ApiInteractionService) {}
-
+```ts
+    const fetcher = new ApiInteractionService("http://localhost:3300");
+    fetcher.get('/');
+```
 
 ## Indendity interaction service
 
 A more powerful tool that allows you to communicate with a closed API that requires access and refresh tokens.
 
+```ts
+import { IdentityServerInteractionService } from 'api_interaction_services';
+```
 
-    import { IdentityServerInteractionService } from 'api_interaction_services';
+
+## Inversify
+
+Or you can use this classes with inverisify in a few steps:
+
+1. Declare SERVICE_IDENTIFIER name for service
+```ts
+export const SERVICE_IDENTIFIER = {
+    ApiInteractionService: Symbol.for("ApiInteractionService"),
+};
+```
+
+2. Bind this name to class with url to your API
+```ts
+container.bind<ApiInteractionService>(SERVICE_IDENTIFIER.ApiInteractionService).toConstantValue(new ApiInteractionService(API_URL));
+```
+
+3. And now you can inject this service to your class
+
+```ts
+constructor(@inject(SERVICE_IDENTIFIER.ApiInteractionService) protected _apiService: ApiInteractionService) {}
+```
 

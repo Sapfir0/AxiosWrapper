@@ -1,4 +1,4 @@
-export * from "./BaseInteractionService";
+export * from "./ApiInteractionService";
 export * from "./typings/ApiTypes"
 export * from "./typings/auth"
 export * from "./typings/common"

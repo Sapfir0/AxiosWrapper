@@ -1,11 +1,11 @@
 import { AxiosRequestConfig } from 'axios';
-import { BaseInteractionService } from './BaseInteractionService';
+import { ApiInteractionService } from './ApiInteractionService';
 import { ValidationError } from './errors/ValidationError';
 import { Either, bimap, map } from 'fp-ts/Either';
 import { inject, injectable } from 'inversify';
 import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
 import TokenService from './TokenService';
-import { IAuthInteractionService } from './typings/ApiTypes';
+import { IIdentityInteractionService } from './typings/ApiTypes';
 import { IdentityServerRoutes, TokensData, TokensDataExtended } from './typings/auth';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { IData, RequestSettings } from './typings/common';
@@ -13,9 +13,9 @@ import container from './inversify/inversifyContainer';
 
 
 @injectable()
-export class IdentityServerInteractionService implements IAuthInteractionService {
+export class IdentityServerInteractionService implements IIdentityInteractionService {
     private readonly _token: TokenService
-    private readonly _fetcher: BaseInteractionService
+    private readonly _fetcher: ApiInteractionService
     constructor(
         protected AUTH_SERVICE_URL: string,
         protected routes: IdentityServerRoutes
