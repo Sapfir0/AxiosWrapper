@@ -15,24 +15,27 @@ So you can use it as
 Or you can use this with inverisify in a few steps:
 
 1. Declare SERVICE_IDENTIFIER name for service
-    
-        export const SERVICE_IDENTIFIER = {
-            ApiInteractionService: Symbol.for('ApiInteractionService'),
-        };
+```ts
+export const SERVICE_IDENTIFIER = {
+    ApiInteractionService: Symbol.for('ApiInteractionService'),
+};
+```
 
 1. Bind this name to class with throwing url to API
-
-        container.bind<ApiInteractionService>(SERVICE_IDENTIFIER.ApiInteractionService).toConstantValue(new ApiInteractionService(API_URL));
+```ts
+container.bind<ApiInteractionService>(SERVICE_IDENTIFIER.ApiInteractionService).toConstantValue(new ApiInteractionService(API_URL));
+```
 
 1. And now you can inject this service to your class
 
-        constructor(@inject(SERVICE_IDENTIFIER.ApiInteractionService) protected _apiService: ApiInteractionService) {}
-
+```ts
+constructor(@inject(SERVICE_IDENTIFIER.ApiInteractionService) protected _apiService: ApiInteractionService) {}
+```
 
 ## Indendity interaction service
 
 A more powerful tool that allows you to communicate with a closed API that requires access and refresh tokens.
 
-
-    import { IdentityServerInteractionService } from 'api_interaction_services';
-
+```ts
+import { IdentityServerInteractionService } from 'api_interaction_services';
+```

@@ -4,5 +4,5 @@ export const SERVICE_IDENTIFIER = {
     LocalStorage: Symbol.for('LocalStorage'),
     TokenService: Symbol.for('TokenService'),
     IdentityServerInteractionService: Symbol.for('IdentityServerInteractionService'),
-
+    ApiInteractionService: Symbol.for('ApiServerInteractionService'),
 };

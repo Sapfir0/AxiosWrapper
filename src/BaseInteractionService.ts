@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as E from 'fp-ts/lib/Either';
+import { injectable } from 'inversify';
 import * as qs from 'querystring';
 import { ApiHelper } from './ApiHelper';
 import { BaseInteractionError } from './errors/BaseInteractionError';
@@ -9,6 +10,7 @@ import { SERVICE_IDENTIFIER } from './inversify/inversifyTypes';
 import { IBaseInteractionService } from './typings/ApiTypes';
 import { IData, RequestSettings } from './typings/common';
 
+@injectable()
 export class BaseInteractionService implements IBaseInteractionService {
     private readonly _fetcher: ApiHelper;
 
