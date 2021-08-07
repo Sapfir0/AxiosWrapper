@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from 'axios';
-import { BaseInteractionService } from './BaseInteractionService';
+import { ApiInteractionService } from './ApiInteractionService';
 import { ValidationError } from './errors/ValidationError';
 import { Either, bimap, map } from 'fp-ts/Either';
 import { inject, injectable } from 'inversify';
@@ -15,7 +15,7 @@ import container from './inversify/inversifyContainer';
 @injectable()
 export class IdentityServerInteractionService implements IIdentityInteractionService {
     private readonly _token: TokenService
-    private readonly _fetcher: BaseInteractionService
+    private readonly _fetcher: ApiInteractionService
     constructor(
         protected AUTH_SERVICE_URL: string,
         protected routes: IdentityServerRoutes
