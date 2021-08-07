@@ -3,7 +3,7 @@
   "author": "Yurev Alexander",
   "main": "dist/src/index.js",
   "typings": "dist/src/index",
-  "version": "0.2.9",
+  "version": "0.2.11",
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode production --env NODE_ENV=prod",

@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es2017",
     "outDir": "dist",
+    "module": "commonjs",
     "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
@@ -23,7 +24,6 @@
     "sourceMap": true,
     "baseUrl": "src",
     "types": [
-      "reflect-metadata",
       "jest",
       "node"
     ],
