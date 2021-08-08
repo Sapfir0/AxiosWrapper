@@ -1,4 +1,4 @@
-class LocalStorage {
+export class LocalStorage {
     constructor(protected field: string) {}
     public get = <T>(): T | undefined => {
         const databaseObject = localStorage.getItem(this.field);
@@ -14,8 +14,4 @@ class LocalStorage {
     public set = (data: unknown): void => {
         localStorage.setItem(this.field, JSON.stringify(data));
     };
-}
-
-export function getLocalStorage(field: string) {
-    return new LocalStorage(field);
 }

@@ -1,9 +1,9 @@
-import { getLocalStorage } from './LocalStorage';
+import { LocalStorage } from './LocalStorage';
 import { TokensDataExtended } from './typings/auth';
 
 class TokenService {
     private readonly timeoutDivider = 2; // при каком отношении таймстемпа генерации и уже прошедшего времени мы будем обновлять токен
-    private _ls = getLocalStorage('USER');
+    private _ls = new LocalStorage('USER');
 
     constructor() {
         const databaseUser = this._ls.get<TokensDataExtended>();
