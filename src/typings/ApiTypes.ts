@@ -1,6 +1,6 @@
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { BaseInteractionError } from '../errors/BaseInteractionError';
-import { NetworkError } from 'errors/NetworkError';
+import { NetworkError } from '../errors/NetworkError';
 import { ValidationError } from '../errors/ValidationError';
 import * as E from 'fp-ts/lib/Either';
 import * as TE from 'fp-ts/lib/TaskEither';
