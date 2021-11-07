@@ -1,4 +1,4 @@
-import { bimap, TaskEither, map } from 'fp-ts/TaskEither';
+import { bimap, TaskEither, map, fold } from 'fp-ts/TaskEither';
 import { ApiInteractionService } from './ApiInteractionService';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { ValidationError } from './errors/ValidationError';
@@ -6,6 +6,7 @@ import TokenService from './TokenService';
 import { IIdentityInteractionService } from './typings/ApiTypes';
 import { IdentityServerRoutes, TokensData, TokensDataExtended } from './typings/auth';
 import { IData, RequestSettings } from './typings/common';
+import { flow, pipe } from 'fp-ts/function';
 
 export class BearerApiInteractionService extends ApiInteractionService implements IIdentityInteractionService {
     private readonly _token: TokenService;
@@ -50,22 +51,20 @@ export class BearerApiInteractionService extends ApiInteractionService implement
         await this.updateTokenIfOld();
     };
 
-    public async get<T = any>(
+    public get<T = any>(
         url: string,
         data?: IData,
         settings: RequestSettings = this.defaultSettings,
     ): TaskEither<BaseInteractionError, T> {
-        await this.updateTokenIfOld();
-        return super.get<T>(url, data, this.setAuthHeader(settings));
+        return flow(this.updateTokenIfOld, super.get<T>(url, data, this.setAuthHeader(settings)));
     }
 
-    public async post<T = any>(
+    public post<T = any>(
         url: string,
         data?: IData,
         settings: RequestSettings = this.defaultSettings,
     ): TaskEither<BaseInteractionError, T> {
-        await this.updateTokenIfOld();
-        return this.post<T>(url, data, this.setAuthHeader(settings));
+        return flow(this.updateTokenIfOld, super.post<T>(url, data, this.setAuthHeader(settings)));
     }
 
     public put<T = any>(
@@ -73,17 +72,15 @@ export class BearerApiInteractionService extends ApiInteractionService implement
         data?: IData,
         settings: RequestSettings = this.defaultSettings,
     ): TaskEither<BaseInteractionError, T> {
-        await this.updateTokenIfOld();
-        return super.put<T>(url, data, this.setAuthHeader(settings));
+        return flow(this.updateTokenIfOld, super.put<T>(url, data, this.setAuthHeader(settings)));
     }
 
-    public async delete<T = any>(
+    public delete<T = any>(
         url: string,
         data?: IData,
         settings: RequestSettings = this.defaultSettings,
     ): TaskEither<BaseInteractionError, T> {
-        await this.updateTokenIfOld();
-        return super.delete<T>(url, data, this.setAuthHeader(settings));
+        return flow(this.updateTokenIfOld, super.delete<T>(url, data, this.setAuthHeader(settings)));
     }
 
     private setAuthHeader = ({ config, ...settings }: RequestSettings): RequestSettings => {

@@ -1,12 +1,9 @@
 import * as TE from 'fp-ts/lib/TaskEither';
 import * as E from 'fp-ts/lib/Either';
 import { ApiInteractionService } from '../ApiInteractionService';
-import axios from 'axios';
-import { userInfo } from 'os';
+import { TEST_API_URL } from '../testConfig/config';
 
-const API_URL = 'https://petstore.swagger.io/v2';
-
-const api = new ApiInteractionService(API_URL);
+const api = new ApiInteractionService(TEST_API_URL);
 
 const dogExample = {
     name: 'doggie',
@@ -23,22 +20,6 @@ describe('CRUD', () => {
 
         const response = await api.get(`/pet/${petEither.right.id}`)();
         expect(E.isRight(response)).toBeTruthy()
-    });
-});
-
-const user = {
-    username: "Alex",
-    password: "12345678"
-}
-
-describe('Auth', () => {
-    test('create user', async () => {
-        const userEither = await api.post('/user', user)();
-        expect(E.isRight(userEither)).toBeTruthy()
-    });
-    test('login', async () => {
-        const userEither = await api.get('/user/login', user)();
-        expect(E.isRight(userEither)).toBeTruthy()
     });
 });
 
