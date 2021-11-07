@@ -1,5 +1,5 @@
 import * as E from 'fp-ts/lib/Either';
-import { BearerApiInteractionService } from '../BearerApiServerInteractionService';
+import { BearerApiInteractionService } from '../BearerApiInteractionService';
 import { TEST_API_URL } from '../testConfig/config';
 
 

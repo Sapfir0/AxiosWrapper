@@ -3,21 +3,34 @@
 
 All services use `fp-ts` library, http methods wrapper return `fp-ts` either.
 ## Simple api interaction class
-    import { ApiInteractionService } from 'api_interaction_services';
-
-So you can use it as
 
 ```ts
-    const fetcher = new ApiInteractionService("http://localhost:3300");
-    fetcher.get('/');
+import { ApiInteractionService } from 'api_interaction_services';
 ```
+
+So you can use it like this:
+
+0.2x:
+
+```ts
+const fetcher = new ApiInteractionService("http://localhost:3300");
+fetcher.get('/');
+```
+
+0.3x:
+
+```ts
+const fetcher = new ApiInteractionService("http://localhost:3300");
+fetcher.get('/')();
+```
+
 
 ## Indendity interaction service
 
 A more powerful tool that allows you to communicate with a closed API that requires access and refresh tokens.
 
 ```ts
-import { IdentityServerInteractionService } from 'api_interaction_services';
+import { BearerApiInteractionService } from 'api_interaction_services';
 ```
 
 
