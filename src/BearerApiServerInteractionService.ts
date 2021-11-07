@@ -9,7 +9,7 @@ import { IdentityServerRoutes, TokensData, TokensDataExtended } from './typings/
 import { IData, RequestSettings } from './typings/common';
 
 
-export class IdentityServerInteractionService extends ApiInteractionService implements IIdentityInteractionService {
+export class BearerApiInteractionService extends ApiInteractionService implements IIdentityInteractionService {
     private readonly _token: TokenService
     
     constructor(

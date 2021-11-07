@@ -1,18 +1,18 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import * as E from 'fp-ts/lib/Either';
+import { Either } from 'fp-ts/lib/Either';
 import * as qs from 'querystring';
+import { TaskEither, bimap } from 'fp-ts/lib/TaskEither';
 import { ApiHelper } from './ApiHelper';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { NetworkError } from './errors/NetworkError';
 import { IBaseInteractionService } from './typings/ApiTypes';
 import { IData, RequestSettings } from './typings/common';
 
-
 export class ApiInteractionService implements IBaseInteractionService {
     private readonly _fetcher: ApiHelper;
 
     constructor(private API_URL: string) {
-        this._fetcher = new ApiHelper()
+        this._fetcher = new ApiHelper();
     }
 
     public get<T = any>(
@@ -20,7 +20,7 @@ export class ApiInteractionService implements IBaseInteractionService {
         data?: any,
         host: string = this.API_URL,
         config?: AxiosRequestConfig,
-    ): Promise<E.Either<BaseInteractionError, T>> {
+    ): TaskEither<BaseInteractionError, T> {
         return this.query<T>({ method: 'get', url: url, params: data, baseURL: host, ...config });
     }
 
@@ -30,7 +30,7 @@ export class ApiInteractionService implements IBaseInteractionService {
         host: string = this.API_URL,
         settings?: RequestSettings,
         config?: AxiosRequestConfig,
-    ): Promise<E.Either<BaseInteractionError, T>> {
+    ): TaskEither<BaseInteractionError, T> {
         const parsedData = settings?.stringify ? qs.stringify(data) : data;
         const parsedConfig = settings?.multipartData ? this.setMultipartDataHeader(config) : config;
 
@@ -43,7 +43,7 @@ export class ApiInteractionService implements IBaseInteractionService {
         host: string = this.API_URL,
         settings?: RequestSettings,
         config?: AxiosRequestConfig,
-    ): Promise<E.Either<BaseInteractionError, T>> {
+    ): TaskEither<BaseInteractionError, T> {
         return this.query<T>({ method: 'put', url: url, baseURL: host, data: data, ...config });
     }
 
@@ -52,19 +52,19 @@ export class ApiInteractionService implements IBaseInteractionService {
         data?: IData,
         host: string = this.API_URL,
         config?: AxiosRequestConfig,
-    ): Promise<E.Either<BaseInteractionError, T>> {
+    ): TaskEither<BaseInteractionError, T> {
         return this.query<T>({ method: 'delete', url: url, data: data, baseURL: host, ...config });
     }
 
-    private query = async <T>(config: AxiosRequestConfig) => {
+    private query = <T>(config: AxiosRequestConfig) => {
         const newConfig: AxiosRequestConfig = {
             ...config,
         };
 
         const req = axios.request<T>({ ...newConfig });
-        const response = await this._fetcher.request<T>(req)();
+        const response = this._fetcher.request<T>(req);
 
-        return E.bimap(
+        return bimap(
             (e: NetworkError) => new BaseInteractionError(e.message),
             (res: AxiosResponse<T>) => res.data,
         )(response);
