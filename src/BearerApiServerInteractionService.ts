@@ -1,5 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
-import { bimap, Either, map } from 'fp-ts/Either';
+import { bimap, TaskEither, map } from 'fp-ts/TaskEither';
 import { ApiInteractionService } from './ApiInteractionService';
 import { BaseInteractionError } from './errors/BaseInteractionError';
 import { ValidationError } from './errors/ValidationError';
@@ -8,20 +7,15 @@ import { IIdentityInteractionService } from './typings/ApiTypes';
 import { IdentityServerRoutes, TokensData, TokensDataExtended } from './typings/auth';
 import { IData, RequestSettings } from './typings/common';
 
-
 export class BearerApiInteractionService extends ApiInteractionService implements IIdentityInteractionService {
-    private readonly _token: TokenService
-    
-    constructor(
-        API_URL: string,
-        protected AUTH_SERVICE_URL: string,
-        protected routes: IdentityServerRoutes
-    ) {
-        super(API_URL)
-        this._token = new TokenService()
+    private readonly _token: TokenService;
+
+    constructor(API_URL: string, protected AUTH_SERVICE_URL: string, protected routes: IdentityServerRoutes) {
+        super(API_URL);
+        this._token = new TokenService();
     }
 
-    public login = async (username: string, password: string): Promise<Either<ValidationError, TokensData>> => {
+    public login = (username: string, password: string): TaskEither<ValidationError, TokensData> => {
         const data = {
             grant_type: 'password',
             client_id: 'browser',
@@ -29,13 +23,12 @@ export class BearerApiInteractionService extends ApiInteractionService implement
             password: password,
         };
 
-        const authData: Either<BaseInteractionError, TokensData> = await super.post<TokensData>(
+        const authData: TaskEither<BaseInteractionError, TokensData> = super.post<TokensData>(
             this.routes.CONNECT_TOKEN,
             data,
-            this.AUTH_SERVICE_URL,
-            { stringify: true },
+            { stringify: true, host: this.AUTH_SERVICE_URL },
         );
-        
+
         return bimap(
             (e: BaseInteractionError) => new BaseInteractionError(e.message),
             (tokens: TokensData) => {
@@ -43,49 +36,67 @@ export class BearerApiInteractionService extends ApiInteractionService implement
                 return tokens;
             },
         )(authData);
-
     };
 
-    public logout = async (): Promise<Either<BaseInteractionError, null>> => {
-        return super.get(this.routes.LOGOUT, {}, this.AUTH_SERVICE_URL, {
-            params: { id_token_hint: this._token.getTokens()?.access_token },
-        });
+    public logout = (): TaskEither<BaseInteractionError, null> => {
+        return super.get(
+            this.routes.LOGOUT,
+            { id_token_hint: this._token.getTokens()?.access_token },
+            { host: this.AUTH_SERVICE_URL },
+        );
     };
 
     public request = async () => {
         await this.updateTokenIfOld();
     };
 
-    
-    public async get<T = any>(url: string, data?:IData, host?: string, config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
-        await this.updateTokenIfOld()
-        return this.get<T>(url, data, host, this.setAuthHeader(config))
+    public async get<T = any>(
+        url: string,
+        data?: IData,
+        settings: RequestSettings = this.defaultSettings,
+    ): TaskEither<BaseInteractionError, T> {
+        await this.updateTokenIfOld();
+        return super.get<T>(url, data, this.setAuthHeader(settings));
     }
 
-    public async post<T = any>(url: string, data?: IData, host?: string,  settings?: RequestSettings, config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
-        await this.updateTokenIfOld()
-        return this.post<T>(url, data, host, settings, this.setAuthHeader(config))
+    public async post<T = any>(
+        url: string,
+        data?: IData,
+        settings: RequestSettings = this.defaultSettings,
+    ): TaskEither<BaseInteractionError, T> {
+        await this.updateTokenIfOld();
+        return this.post<T>(url, data, this.setAuthHeader(settings));
     }
 
-    public async put<T = any>(url: string, data?: IData, host?: string,  settings?: RequestSettings, config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
-        await this.updateTokenIfOld()
-        return this.put<T>(url, data, host, settings, this.setAuthHeader(config))
+    public put<T = any>(
+        url: string,
+        data?: IData,
+        settings: RequestSettings = this.defaultSettings,
+    ): TaskEither<BaseInteractionError, T> {
+        await this.updateTokenIfOld();
+        return super.put<T>(url, data, this.setAuthHeader(settings));
     }
 
-    public async delete<T = any>(url: string, data?: IData, host?: string,  config?: AxiosRequestConfig): Promise<Either<BaseInteractionError, T>> {
-        await this.updateTokenIfOld()
-        return this.delete<T>(url, data, host, this.setAuthHeader(config))
+    public async delete<T = any>(
+        url: string,
+        data?: IData,
+        settings: RequestSettings = this.defaultSettings,
+    ): TaskEither<BaseInteractionError, T> {
+        await this.updateTokenIfOld();
+        return super.delete<T>(url, data, this.setAuthHeader(settings));
     }
 
-    private setAuthHeader = (config?: AxiosRequestConfig) => {
-        const newConfig: AxiosRequestConfig = {
-            ...config,
-            headers: {
-                Authorization: `Bearer ${this._token.getTokens()?.access_token}`,
-                ...config?.headers,
+    private setAuthHeader = ({ config, ...settings }: RequestSettings): RequestSettings => {
+        return {
+            ...settings,
+            config: {
+                ...config,
+                headers: {
+                    Authorization: `Bearer ${this._token.getTokens()?.access_token}`,
+                    ...config?.headers,
+                },
             },
         };
-        return newConfig;
     };
 
     private refreshToken = async (refreshToken: string) => {
@@ -95,8 +106,9 @@ export class BearerApiInteractionService extends ApiInteractionService implement
             refresh_token: refreshToken,
         };
 
-        return this.post(this.routes.CONNECT_TOKEN, data, this.AUTH_SERVICE_URL, {
+        return this.post(this.routes.CONNECT_TOKEN, data, {
             stringify: true,
+            host: this.AUTH_SERVICE_URL,
         });
     };
 
@@ -109,8 +121,7 @@ export class BearerApiInteractionService extends ApiInteractionService implement
             console.log(newUser);
             map((user: any) => {
                 this._token.setTokens(user);
-            })(newUser)
-
+            })(newUser);
         }
     };
 }
