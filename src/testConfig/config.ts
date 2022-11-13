@@ -1,2 +1,2 @@
 
-export const TEST_API_URL = 'https://petstore.swagger.io/v2';
+export const TEST_API_URL = 'https://petstore.swagger.io/v2'

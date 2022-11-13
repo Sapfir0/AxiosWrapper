@@ -1,6 +1,8 @@
 
 # Api interaction services
 
+224kb
+
 All services use `fp-ts` library, http methods wrapper return `fp-ts` either.
 ## Simple api interaction class
 

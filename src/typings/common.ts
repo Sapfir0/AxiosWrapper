@@ -1,14 +1,14 @@
-import { AxiosRequestConfig } from 'axios';
+import type { AxiosRequestConfig } from 'axios'
 
-export interface RequestSettings {
-    host?: string;
-    config?: AxiosRequestConfig;
-    stringify?: boolean;
-    multipartData?: boolean;
+export interface IRequestSettings {
+  host?: string
+  config?: AxiosRequestConfig
+  stringify?: boolean
+  multipartData?: boolean
 }
 
 export interface IDataIndex {
-    [name: string]: any;
+  [name: string]: any
 }
 
-export type IData = IDataIndex | FormData;
+export type IData = IDataIndex | FormData

@@ -1,5 +1,5 @@
 {
-    "name": "api_interaction_services",
+    "name": "@sapfir/axios_wrapper",
     "author": "Yurev Alexander",
     "main": "dist/src/index.js",
     "typings": "dist/src/index",
@@ -9,9 +9,10 @@
         "#errors/*": "./src/errors/*"
     },
     "scripts": {
-        "build": "webpack --mode production --env NODE_ENV=prod",
+        "build": "tsc && du -hs ./dist",
         "start:webpack": "webpack --mode development --env NODE_ENV=dev",
         "start": "tsc",
+        "lint": "eslint .",
         "size": "npm run build",
         "test": "jest"
     },
@@ -21,10 +22,12 @@
         "querystring": "^0.2.1"
     },
     "devDependencies": {
+        "@sapfir0/eslint-config": "^0.0.5",
         "@types/jest": "^26.0.24",
         "@types/node": "^12.0.0",
+        "@typescript-eslint/parser": "^5.42.1",
+        "eslint": "^8.27.0",
         "jest": "^27.0.6",
-        "prettier": "^2.2.1",
         "ts-jest": "^27.0.4",
         "ts-loader": "^9.2.4",
         "typescript": "^4.1.2",

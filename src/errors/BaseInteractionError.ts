@@ -1,9 +1,9 @@
 export class BaseInteractionError extends Error {
-  message: string;
+  message: string
 
   constructor(message: string) {
-      super();
-      this.name = 'BaseInteractionError';
-      this.message = message;
+    super()
+    this.name = 'BaseInteractionError'
+    this.message = message
   }
 }
